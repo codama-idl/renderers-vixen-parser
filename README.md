@@ -1,18 +1,18 @@
-# Codama ➤ Renderers ➤ Demo
+# Codama ➤ Renderers ➤ Vixen Parser
 
 [![npm][npm-image]][npm-url]
 [![npm-downloads][npm-downloads-image]][npm-url]
 
-[npm-downloads-image]: https://img.shields.io/npm/dm/@codama/renderers-demo.svg?style=flat
-[npm-image]: https://img.shields.io/npm/v/@codama/renderers-demo.svg?style=flat&label=%40codama%2Frenderers-demo
-[npm-url]: https://www.npmjs.com/package/@codama/renderers-demo
+[npm-downloads-image]: https://img.shields.io/npm/dm/@codama/renderers-vixen-parser.svg?style=flat
+[npm-image]: https://img.shields.io/npm/v/@codama/renderers-vixen-parser.svg?style=flat&label=%40codama%2Frenderers-vixen-parser
+[npm-url]: https://www.npmjs.com/package/@codama/renderers-vixen-parser
 
-This package provides a demo implementation of a Codama renderer to help developers create their own.
+This package renders Yellowstone account and instruction parsers.
 
 ## Installation
 
 ```sh
-pnpm install @codama/renderers-demo
+pnpm install @codama/renderers-vixen-parser
 ```
 
 ## Usage
@@ -23,8 +23,13 @@ Add the following script to your Codama configuration file.
 {
     "scripts": {
         "demo": {
-            "from": "@codama/renderers-demo",
-            "args": ["docs"]
+            "from": "@codama/renderers-vixen-parser",
+            "args": [
+                {
+                    "projectFolder": ".",
+                    "projectName": "myProgram"
+                }
+            ]
         }
     }
 }
