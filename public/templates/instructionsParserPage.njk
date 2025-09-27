@@ -38,7 +38,7 @@ impl yellowstone_vixen_core::Parser for InstructionParser {
     #[cfg(feature = "shared-data")]
     type Output = InstructionUpdateOutput<{{ programName  | pascalCase }}ProgramIx>;
     
-    fn id(&self) -> std::borrow::Cow<str> {
+    fn id(&self) -> std::borrow::Cow<'static, str> {
         "{{ programName  | pascalCase }}::InstructionParser".into()
     }
 
