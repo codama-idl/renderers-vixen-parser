@@ -134,6 +134,8 @@ function getNumberTypeTransform(type: NumberTypeNode) {
 
         case 'u8':
         case 'u16':
+        case 'i8':
+        case 'i16':
             return `.into()`;
 
         default:
