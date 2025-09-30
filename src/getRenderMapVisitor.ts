@@ -39,6 +39,7 @@ import { ImportMap } from './ImportMap';
 import { getBytesFromBytesValueNode, getImportFromFactory, render } from './utils';
 
 export type GetRenderMapOptions = {
+    allowDiscriminatorField?: boolean;
     generateProto?: boolean;
     projectCrateDescription?: string;
     projectFolder: string;
@@ -443,7 +444,11 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
     const getTraitsFromNode = (_node: AccountNode | DefinedTypeNode) => {
         return { imports: new ImportMap(), render: '' };
     };
-    const typeManifestVisitor = getProtoTypeManifestVisitor({ getImportFrom, getTraitsFromNode });
+    const typeManifestVisitor = getProtoTypeManifestVisitor({
+        allowDiscriminator: options.allowDiscriminatorField ?? false,
+        getImportFrom,
+        getTraitsFromNode,
+    });
 
     return pipe(
         staticVisitor(() => createRenderMap(), {
@@ -484,7 +489,9 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                         return {
                             discriminator: discriminator ? `[${discriminator.join(', ')}]` : null,
                             fields: accData.fields
-                                .filter(field => field.name !== 'discriminator')
+                                .filter(
+                                    field => options.allowDiscriminatorField === true || field.name !== 'discriminator',
+                                )
                                 .map(field => {
                                     return {
                                         name: snakeCase(field.name),
@@ -517,7 +524,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                         ).length;
 
                         const ixArgs = ix.arguments
-                            .filter(arg => arg.name !== 'discriminator')
+                            .filter(arg => options.allowDiscriminatorField === true || arg.name !== 'discriminator')
                             .map(arg => {
                                 return {
                                     name: snakeCase(arg.name),

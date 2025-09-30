@@ -56,12 +56,14 @@ export function numberTypeToProtoHelper(numberType: NumberTypeNode): string {
 }
 
 export function getProtoTypeManifestVisitor(options: {
+    allowDiscriminator?: boolean;
     getImportFrom: GetImportFromFunction;
     getTraitsFromNode: GetTraitsFromNodeFunction;
     nestedStruct?: boolean;
     parentName?: string | null;
 }) {
     const { getTraitsFromNode } = options;
+    const allowDiscriminator = options.allowDiscriminator ?? false;
     let parentName: string | null = options.parentName ?? null;
     let nestedStruct: boolean = options.nestedStruct ?? false;
     let inlineStruct: boolean = false;
@@ -370,7 +372,7 @@ export function getProtoTypeManifestVisitor(options: {
 
                     const fieldName = snakeCase(structFieldType.name);
 
-                    if (fieldName === 'discriminator') {
+                    if (!allowDiscriminator && fieldName === 'discriminator') {
                         return {
                             imports: new ImportMap(),
                             nestedStructs: [],
