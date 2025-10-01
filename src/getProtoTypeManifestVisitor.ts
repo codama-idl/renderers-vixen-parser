@@ -304,6 +304,9 @@ export function getProtoTypeManifestVisitor(options: {
 
                     const optionPrefix = resolveNestedTypeNode(optionType.prefix);
                     if (optionPrefix.format === 'u8' && optionPrefix.endian === 'le') {
+                        if (childManifest.type.startsWith('repeated ')) {
+                            return childManifest;
+                        }
                         return {
                             ...childManifest,
                             type: `optional ${childManifest.type}`,
