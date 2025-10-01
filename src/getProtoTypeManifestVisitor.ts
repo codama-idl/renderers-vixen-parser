@@ -280,7 +280,7 @@ export function getProtoTypeManifestVisitor(options: {
                     return {
                         imports: new ImportMap(),
                         nestedStructs: [],
-                        type: `map<${key.type}, ${value.type}> = 1`,
+                        type: `map<${key.type}, ${value.type}>`,
                     };
                 },
 
