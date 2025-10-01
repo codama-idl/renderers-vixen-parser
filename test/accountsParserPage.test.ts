@@ -50,7 +50,7 @@ test('it renders accounts parsers', () => {
         'impl yellowstone_vixen_core::Parser for AccountParser',
         'async fn parse',
         'fn prefilter(&self) -> yellowstone_vixen_core::Prefilter',
-        'fn id(&self) -> std::borrow::Cow<str>',
+        'fn id(&self) -> std::borrow::Cow<\'static, str>',
         'type Input = yellowstone_vixen_core::AccountUpdate',
         'type Output = TestProgramState',
     ]);
