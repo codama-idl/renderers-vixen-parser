@@ -207,14 +207,23 @@ function getOptionTypeTransform(
     const innerTransform = getTransform(item, outerTypeName, idlDefinedTypes, options);
     const cleanedTransform = innerTransform.replace(`self.${outerTypeName}`, 'x');
 
+    let returnTransform = '';
     switch (cleanedTransform) {
         case 'x':
-            return `self.${outerTypeName}`;
+            returnTransform = `self.${outerTypeName}`;
+            break;
         case 'Some(x.into_proto())':
-            return `self.${outerTypeName}.map(|x| x.into_proto())`;
+            returnTransform = `self.${outerTypeName}.map(|x| x.into_proto())`;
+            break;
         default:
-            return `self.${outerTypeName}.map(|x| ${cleanedTransform})`;
+            returnTransform = `self.${outerTypeName}.map(|x| ${cleanedTransform})`;
     }
+
+    if (item.kind === 'arrayTypeNode' || item.kind === 'fixedSizeTypeNode') {
+        returnTransform += '.unwrap_or_default()';
+    }
+
+    return returnTransform;
 }
 
 function getTransform(
