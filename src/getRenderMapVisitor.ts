@@ -217,6 +217,7 @@ function getOptionTypeTransform(
             break;
         default:
             returnTransform = `self.${outerTypeName}.map(|x| ${cleanedTransform})`;
+            break;
     }
 
     if (item.kind === 'arrayTypeNode' || item.kind === 'fixedSizeTypeNode') {
