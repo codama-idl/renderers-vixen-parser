@@ -194,6 +194,14 @@ function getArrayTypeTransform(item: TypeNode, outerTypeName: string, idlDefined
             return `self.${outerTypeName}.into_iter().map(|x| x.into()).collect()`;
         }
 
+        case 'sizePrefixTypeNode': {
+            return `self.${outerTypeName}.into_iter().map(|x| x.into()).collect()`;
+        }
+
+        case 'stringTypeNode': {
+            return `self.${outerTypeName}`;
+        }
+
         default:
             console.warn(`Warning!: Default case for array type: ${item.kind} for type ${outerTypeName}`);
             return `self.${outerTypeName}.to_vec()`;
@@ -258,6 +266,9 @@ function getTransform(
 
         case 'numberTypeNode':
             return `self.${typeName}${getNumberTypeTransform(type)}`;
+
+        case 'sizePrefixTypeNode':
+            return getArrayTypeTransform(type.type, typeName, idlDefinedTypes);
 
         default:
             return `self.${typeName}`;
