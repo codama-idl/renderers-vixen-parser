@@ -237,6 +237,19 @@ function getOptionTypeTransform(
     return returnTransform;
 }
 
+function getMapValueTransform(valueType: TypeNode): string {
+    switch (valueType.kind) {
+        case 'definedTypeLinkNode':
+            return '.into_proto()';
+        case 'publicKeyTypeNode':
+            return '.to_string()';
+        case 'numberTypeNode':
+            return getNumberTypeTransform(valueType);
+        default:
+            return '';
+    }
+}
+
 function getTransform(
     type: TypeNode,
     name: string,
@@ -269,6 +282,11 @@ function getTransform(
 
         case 'sizePrefixTypeNode':
             return getArrayTypeTransform(type.type, typeName, idlDefinedTypes);
+
+        case 'mapTypeNode': {
+            const valueTransform = getMapValueTransform(type.value);
+            return `self.${typeName}.into_iter().map(|(k, v)| (k, v${valueTransform})).collect()`;
+        }
 
         default:
             return `self.${typeName}`;
