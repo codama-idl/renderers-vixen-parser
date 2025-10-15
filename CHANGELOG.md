@@ -1,5 +1,13 @@
 # @codama/renderers-vixen-parser
 
+## 1.2.8
+
+### Patch Changes
+
+- [#26](https://github.com/codama-idl/renderers-vixen-parser/pull/26) [`ea6aaa9`](https://github.com/codama-idl/renderers-vixen-parser/commit/ea6aaa90565431a162ca5ad903cb025f42f3273c) Thanks [@CanardMandarin](https://github.com/CanardMandarin)! - - Fix IDL bytes type conversion
+
+- [#33](https://github.com/codama-idl/renderers-vixen-parser/pull/33) [`600a593`](https://github.com/codama-idl/renderers-vixen-parser/commit/600a593ae78e65de540e115e41dfe77488d3f306) Thanks [@CanardMandarin](https://github.com/CanardMandarin)! - - Add HashMap values conversion when needed
+
 ## 1.2.7
 
 ### Patch Changes
