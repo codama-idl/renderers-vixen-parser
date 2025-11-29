@@ -12,6 +12,7 @@ pub mod instructions_parser;
 pub mod proto_helpers;
 {% endif %}
 
+#[cfg_attr(not(feature = "tracing"), allow(unused_variables))]
 /// Deserialize a Borsh-encoded account, checking that all significant bytes are read.
 pub fn deserialize_checked<T: borsh::BorshDeserialize>(
     data: &[u8],
