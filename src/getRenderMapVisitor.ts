@@ -759,10 +759,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
 
                         definedTypes.push(...matrixProtoTypes);
 
-                        renderMap = addToRenderMap(
-                            renderMap,
-                            `proto/${protoProjectName}.proto`,
-                            render('proto.njk', {
+                        renderMap = addToRenderMap(renderMap, `proto/${protoProjectName}.proto`, {
+                            content: render('proto.njk', {
                                 accounts: protoAccounts,
                                 definedTypes,
                                 instructions: protoIxs,
@@ -772,7 +770,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                                 protoProjectName,
                                 types: protoTypes,
                             }),
-                        );
+                        });
 
                         if (protoTypesHelpers.length > 0 || protoTypesHelpersEnums.length > 0) {
                             hasProtoHelpers = true;
@@ -783,15 +781,13 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                                 });
                             };
 
-                            renderMap = addToRenderMap(
-                                renderMap,
-                                `src/generated_parser/proto_helpers.rs`,
-                                render('protoHelpersPage.njk', {
+                            renderMap = addToRenderMap(renderMap, `src/generated_parser/proto_helpers.rs`, {
+                                content: render('protoHelpersPage.njk', {
                                     normalizeAcronyms,
                                     protoTypesHelpers,
                                     protoTypesHelpersEnums,
                                 }),
-                            );
+                            });
                         }
                     }
 
@@ -815,51 +811,41 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
 
                     // only two files are generated as part of account and instruction parser
                     if (accCtx.accounts.length > 0) {
-                        renderMap = addToRenderMap(
-                            renderMap,
-                            `src/generated_parser/accounts_parser.rs`,
-                            render('accountsParserPage.njk', accCtx),
-                        );
+                        renderMap = addToRenderMap(renderMap, `src/generated_parser/accounts_parser.rs`, {
+                            content: render('accountsParserPage.njk', accCtx),
+                        });
                     }
 
                     if (ixCtx.instructions.length > 0) {
-                        renderMap = addToRenderMap(
-                            renderMap,
-                            `src/generated_parser/instructions_parser.rs`,
-                            render('instructionsParserPage.njk', ixCtx),
-                        );
+                        renderMap = addToRenderMap(renderMap, `src/generated_parser/instructions_parser.rs`, {
+                            content: render('instructionsParserPage.njk', ixCtx),
+                        });
                     }
 
                     return pipe(
                         renderMap,
                         r =>
-                            addToRenderMap(
-                                r,
-                                `src/generated_parser/mod.rs`,
-                                render('rootMod.njk', {
+                            addToRenderMap(r, `src/generated_parser/mod.rs`, {
+                                content: render('rootMod.njk', {
                                     hasAccounts: accCtx.accounts.length > 0,
                                     hasProtoHelpers,
                                 }),
-                            ),
+                            }),
                         r =>
-                            addToRenderMap(
-                                r,
-                                'src/lib.rs',
-                                render('libPage.njk', {
+                            addToRenderMap(r, 'src/lib.rs', {
+                                content: render('libPage.njk', {
                                     programId: node.program.name,
                                     protoProjectName,
                                 }),
-                            ),
-                        r => addToRenderMap(r, 'build.rs', render('buildPage.njk', { protoProjectName })),
+                            }),
+                        r => addToRenderMap(r, 'build.rs', { content: render('buildPage.njk', { protoProjectName }) }),
                         r =>
-                            addToRenderMap(
-                                r,
-                                'Cargo.toml',
-                                render('CargoPage.njk', {
+                            addToRenderMap(r, 'Cargo.toml', {
+                                content: render('CargoPage.njk', {
                                     projectCrateDescription: options.projectCrateDescription,
                                     projectName,
                                 }),
-                            ),
+                            }),
                     );
                 },
             }),

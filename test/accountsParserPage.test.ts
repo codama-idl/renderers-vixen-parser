@@ -39,7 +39,7 @@ test('it renders accounts parsers', () => {
 
     // Then we expect the following identifier and reference to the byte array
     // as a parameters to be rendered.
-    codeContains(getFromRenderMap(renderMap, 'src/generated_parser/accounts_parser.rs'), [
+    codeContains(getFromRenderMap(renderMap, 'src/generated_parser/accounts_parser.rs').content, [
         'pub enum TestProgramState',
         'Mint(Mint)',
         'Account(Account)',
