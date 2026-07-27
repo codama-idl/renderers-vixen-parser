@@ -203,8 +203,8 @@ export function getProtoTypeManifestVisitor(options: {
                         throw new Error('Enum type must have a parent name.');
                     }
 
-                    const variantNames = enumType.variants.map(variant => variant.name);
-                    const variants = enumType.variants.map(variant => visit(variant, self));
+                    const variantNames = (enumType.variants ?? []).map(variant => variant.name);
+                    const variants = (enumType.variants ?? []).map(variant => visit(variant, self));
                     const variantTypes = variants.map(v => v.type);
 
                     const enumHasDefinedType = variantTypes.some(type => type.includes('message'));
@@ -237,7 +237,7 @@ export function getProtoTypeManifestVisitor(options: {
                         const variantTypeArray = variant.split(' ');
                         const name = variantTypeArray[variantTypeArray.length - 1];
                         const outerType = variantTypeArray[0];
-                        const isVariantEmpty = enumType.variants[i].kind === 'enumEmptyVariantTypeNode';
+                        const isVariantEmpty = (enumType.variants ?? [])[i].kind === 'enumEmptyVariantTypeNode';
 
                         // handle nested Tuple types
                         if (outerType === 'repeated') {
@@ -395,7 +395,7 @@ export function getProtoTypeManifestVisitor(options: {
                         throw new Error('Struct type must have a parent name.');
                     }
 
-                    const fields = structType.fields
+                    const fields = (structType.fields ?? [])
                         .map(field => visit(field, self))
                         .filter(field => field.type !== '');
                     const fieldTypes = fields.map((field, idx) => `${field.type} = ${idx + 1};`).join('\n');
@@ -413,7 +413,7 @@ export function getProtoTypeManifestVisitor(options: {
                         throw new Error('Tuple type must have a parent name.');
                     }
 
-                    const fields = tupleType.items.reduce((acc, field, idx) => {
+                    const fields = (tupleType.items ?? []).reduce((acc, field, idx) => {
                         const fieldManifest = visit(field, self);
                         return `${acc}  ${fieldManifest.type} field_${idx} = ${idx + 1};\n`;
                     }, '');
