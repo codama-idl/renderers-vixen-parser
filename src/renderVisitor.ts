@@ -21,12 +21,14 @@ export function renderVisitor(options: RenderOptions) {
             deleteDirectory(projectFolder);
         }
 
-        // Include generated Rust SDK in the crate
+        // Include generated Rust SDK in the crate. As of @codama/renderers-rust@3, the crate
+        // folder is the first positional argument and the SDK folder is given relative to it
+        // via the `generatedFolder` option.
         visit(
             root,
-            renderRustVisitor(`${projectFolder}/src/generated_sdk`, {
-                crateFolder: projectFolder,
+            renderRustVisitor(projectFolder, {
                 formatCode: options.formatCode !== false,
+                generatedFolder: 'src/generated_sdk',
                 toolchain: options.toolchain,
             }),
         );

@@ -151,7 +151,7 @@ test('it renders instructions parsers', () => {
 
     // // Then we expect the following pub struct.
     // codeContains(getFromRenderMap(renderMap, 'instructions/mint_tokens.rs'), [`pub struct MintTokensInstructionData`, `pub fn new(`]);
-    codeContains(getFromRenderMap(renderMap, 'src/generated_parser/instructions_parser.rs'), [
+    codeContains(getFromRenderMap(renderMap, 'src/generated_parser/instructions_parser.rs').content, [
         'pub enum TestProgramIx',
         'CreateAccount(CreateAccountIxAccounts, CreateAccountIxData)',
         'Assign(AssignIxAccounts, AssignIxData)',

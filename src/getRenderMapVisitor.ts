@@ -120,7 +120,7 @@ function getInnerDefinedTypeTransformForEnumVariant(
 }
 
 export function isEnumEmptyVariant(type: EnumTypeNode) {
-    return type.variants.reduce((acc, variant) => acc && variant.kind === 'enumEmptyVariantTypeNode', true);
+    return (type.variants ?? []).reduce((acc, variant) => acc && variant.kind === 'enumEmptyVariantTypeNode', true);
 }
 
 export function getEnumTypeTransform(_type: EnumTypeNode, _outerTypeName: string) {}
@@ -301,11 +301,11 @@ function getEnumVariantTransform(variant: EnumVariantTypeNode, idlDefinedTypes: 
 
         case 'enumStructVariantTypeNode': {
             if (variant.struct.kind === 'structTypeNode') {
-                const variantFields = variant.struct.fields.reduce(
+                const variantFields = (variant.struct.fields ?? []).reduce(
                     (acc, field) => `${acc}${snakeCase(field.name)}, `,
                     '',
                 );
-                const fieldsTransformMap = variant.struct.fields.map(field => [
+                const fieldsTransformMap = (variant.struct.fields ?? []).map(field => [
                     snakeCase(field.name),
                     getTransform(field.type, field.name, idlDefinedTypes, { isEnumVariant: true }),
                 ]);
@@ -331,9 +331,9 @@ function getEnumVariantTransform(variant: EnumVariantTypeNode, idlDefinedTypes: 
                 throw new Error(`Unsupported enum variant type: ${variant.tuple.kind}`);
             }
 
-            const variantFields = variant.tuple.items.reduce((acc, _field, i) => `${acc}field_${i}, `, '');
+            const variantFields = (variant.tuple.items ?? []).reduce((acc, _field, i) => `${acc}field_${i}, `, '');
 
-            const fieldsTransformMap = variant.tuple.items.map((field, i) => [
+            const fieldsTransformMap = (variant.tuple.items ?? []).map((field, i) => [
                 `field_${i}`,
                 getTransform(field, `field_${i}`, idlDefinedTypes, { isEnumVariant: true }),
             ]);
@@ -449,7 +449,7 @@ const getAccountSizeOrFieldDiscriminator = (node: AccountNode): string[] | null 
         throw new Error(`Account "${node.name}" does not have a supported discriminator`);
     }
 
-    const discriminatorValue = resolveNestedTypeNode(node.data).fields[0];
+    const discriminatorValue = (resolveNestedTypeNode(node.data).fields ?? [])[0];
 
     return getFieldDiscriminator(discriminatorValue);
 };
@@ -472,7 +472,7 @@ const getIxFieldDiscriminator = (node: InstructionNode) => {
         throw new Error(notSupportedDiscriminatorError);
     }
 
-    const discriminatorValue = node.arguments[0];
+    const discriminatorValue = (node.arguments ?? [])[0];
 
     return getFieldDiscriminator(discriminatorValue);
 };
@@ -524,7 +524,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
 
                         return {
                             discriminator: discriminator ? `[${discriminator.join(', ')}]` : null,
-                            fields: accData.fields
+                            fields: (accData.fields ?? [])
                                 .filter(field => field.name !== 'discriminator')
                                 .map(field => {
                                     return {
@@ -551,13 +551,13 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                         }
                         ixDiscLen = discriminator.length;
 
-                        const hasArgs = ix.arguments.length > 1;
+                        const hasArgs = (ix.arguments ?? []).length > 1;
 
-                        const totalOptionalOmittedAccounts = ix.accounts.filter(
+                        const totalOptionalOmittedAccounts = (ix.accounts ?? []).filter(
                             acc => acc.isOptional && ix.optionalAccountStrategy === 'omitted',
                         ).length;
 
-                        const ixArgs = ix.arguments
+                        const ixArgs = (ix.arguments ?? [])
                             .filter(arg => arg.name !== 'discriminator')
                             .map(arg => {
                                 return {
@@ -567,7 +567,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                             });
 
                         return {
-                            accounts: ix.accounts.map((acc, accIdx) => {
+                            accounts: (ix.accounts ?? []).map((acc, accIdx) => {
                                 return {
                                     index: accIdx,
                                     isOptional: acc.isOptional,
@@ -655,7 +655,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                             }
 
                             if (type.type.kind === 'structTypeNode') {
-                                const fields = type.type.fields.map(field => {
+                                const fields = (type.type.fields ?? []).map(field => {
                                     return {
                                         name: snakeCase(field.name),
                                         transform: getTransform(field.type, field.name, types),
@@ -670,7 +670,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                                 // Only need for additional `IntoProto` implementations for non-empty variants enums (otherwhise
                                 //  they are automatically treated as i32 by tonic genereted types)
 
-                                const variants = type.type.variants.map(variant => {
+                                const variants = (type.type.variants ?? []).map(variant => {
                                     const [variant_fields, fields_transform] = getEnumVariantTransform(variant, types);
                                     return {
                                         fields_transform,
@@ -698,7 +698,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
 
                         for (const ix of programInstructions) {
                             const ixName = ix.name;
-                            const ixAccounts = ix.accounts
+                            const ixAccounts = (ix.accounts ?? [])
                                 .map((acc, idx) => {
                                     if (!acc.isOptional) {
                                         return `\tstring ${snakeCase(acc.name)} = ${idx + 1};`;
@@ -713,7 +713,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
 
                             let idx = 0;
 
-                            const ixArgs = ix.arguments
+                            const ixArgs = (ix.arguments ?? [])
                                 .map(arg => {
                                     const node = visit(arg.type, typeManifestVisitor);
 
@@ -759,10 +759,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
 
                         definedTypes.push(...matrixProtoTypes);
 
-                        renderMap = addToRenderMap(
-                            renderMap,
-                            `proto/${protoProjectName}.proto`,
-                            render('proto.njk', {
+                        renderMap = addToRenderMap(renderMap, `proto/${protoProjectName}.proto`, {
+                            content: render('proto.njk', {
                                 accounts: protoAccounts,
                                 definedTypes,
                                 instructions: protoIxs,
@@ -772,7 +770,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                                 protoProjectName,
                                 types: protoTypes,
                             }),
-                        );
+                        });
 
                         if (protoTypesHelpers.length > 0 || protoTypesHelpersEnums.length > 0) {
                             hasProtoHelpers = true;
@@ -783,15 +781,13 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
                                 });
                             };
 
-                            renderMap = addToRenderMap(
-                                renderMap,
-                                `src/generated_parser/proto_helpers.rs`,
-                                render('protoHelpersPage.njk', {
+                            renderMap = addToRenderMap(renderMap, `src/generated_parser/proto_helpers.rs`, {
+                                content: render('protoHelpersPage.njk', {
                                     normalizeAcronyms,
                                     protoTypesHelpers,
                                     protoTypesHelpersEnums,
                                 }),
-                            );
+                            });
                         }
                     }
 
@@ -815,51 +811,41 @@ export function getRenderMapVisitor(options: GetRenderMapOptions) {
 
                     // only two files are generated as part of account and instruction parser
                     if (accCtx.accounts.length > 0) {
-                        renderMap = addToRenderMap(
-                            renderMap,
-                            `src/generated_parser/accounts_parser.rs`,
-                            render('accountsParserPage.njk', accCtx),
-                        );
+                        renderMap = addToRenderMap(renderMap, `src/generated_parser/accounts_parser.rs`, {
+                            content: render('accountsParserPage.njk', accCtx),
+                        });
                     }
 
                     if (ixCtx.instructions.length > 0) {
-                        renderMap = addToRenderMap(
-                            renderMap,
-                            `src/generated_parser/instructions_parser.rs`,
-                            render('instructionsParserPage.njk', ixCtx),
-                        );
+                        renderMap = addToRenderMap(renderMap, `src/generated_parser/instructions_parser.rs`, {
+                            content: render('instructionsParserPage.njk', ixCtx),
+                        });
                     }
 
                     return pipe(
                         renderMap,
                         r =>
-                            addToRenderMap(
-                                r,
-                                `src/generated_parser/mod.rs`,
-                                render('rootMod.njk', {
+                            addToRenderMap(r, `src/generated_parser/mod.rs`, {
+                                content: render('rootMod.njk', {
                                     hasAccounts: accCtx.accounts.length > 0,
                                     hasProtoHelpers,
                                 }),
-                            ),
+                            }),
                         r =>
-                            addToRenderMap(
-                                r,
-                                'src/lib.rs',
-                                render('libPage.njk', {
+                            addToRenderMap(r, 'src/lib.rs', {
+                                content: render('libPage.njk', {
                                     programId: node.program.name,
                                     protoProjectName,
                                 }),
-                            ),
-                        r => addToRenderMap(r, 'build.rs', render('buildPage.njk', { protoProjectName })),
+                            }),
+                        r => addToRenderMap(r, 'build.rs', { content: render('buildPage.njk', { protoProjectName }) }),
                         r =>
-                            addToRenderMap(
-                                r,
-                                'Cargo.toml',
-                                render('CargoPage.njk', {
+                            addToRenderMap(r, 'Cargo.toml', {
+                                content: render('CargoPage.njk', {
                                     projectCrateDescription: options.projectCrateDescription,
                                     projectName,
                                 }),
-                            ),
+                            }),
                     );
                 },
             }),
