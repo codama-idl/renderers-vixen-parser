@@ -51,7 +51,7 @@
         "@changesets/changelog-github": "^1.0.0",
         "@changesets/cli": "^3.0.0",
         "@solana/eslint-config-solana": "^5.0.0",
-        "@solana/prettier-config-solana": "0.0.6",
+        "@solana/prettier-config-solana": "0.0.7",
         "@types/node": "^25",
         "@types/nunjucks": "^3.2.6",
         "agadoo": "^3.0.0",
