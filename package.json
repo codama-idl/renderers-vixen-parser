@@ -50,7 +50,7 @@
         "@codama/nodes-from-anchor": "1.5.4",
         "@changesets/changelog-github": "^1.0.0",
         "@changesets/cli": "^3.0.0",
-        "@solana/eslint-config-solana": "^5.0.0",
+        "@solana/eslint-config-solana": "^6.0.1",
         "@solana/prettier-config-solana": "0.0.7",
         "@types/node": "^25",
         "@types/nunjucks": "^3.2.6",
