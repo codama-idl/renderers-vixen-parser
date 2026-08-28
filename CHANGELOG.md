@@ -1,5 +1,11 @@
 # @codama/renderers-vixen-parser
 
+## 1.3.0
+
+### Minor Changes
+
+- [#97](https://github.com/codama-idl/renderers-vixen-parser/pull/97) [`17ef8e6`](https://github.com/codama-idl/renderers-vixen-parser/commit/17ef8e63cf513e62b7c0d958e9c49ffdcbf7f892) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Support `@codama/nodes@1.10` (node array attributes are now optional, guarded with `?? []`) and upgrade `@codama/renderers-rust` to 3.x. The Rust SDK is now rendered via the new `renderVisitor(crateFolder, { generatedFolder })` signature, and render-map entries are wrapped as `{ content }` fragments to match the updated `@codama/renderers-core` API. The new `injectedValueNode` value kind now throws an explicit unsupported-node error.
+
 ## 1.2.8
 
 ### Patch Changes
