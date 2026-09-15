@@ -1,3 +1,6 @@
+> [!WARNING]
+> This renderer has been deprecated in favour of [the Shipstern parser](https://github.com/solana-rpc/shipstern/blob/main/docs/codama-parser-generation.md).
+
 # Codama ➤ Renderers ➤ Vixen Parser
 
 [![npm][npm-image]][npm-url]
